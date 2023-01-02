@@ -1,10 +1,11 @@
-import { combineReducers } from 'redux';
+import 'bootstrap/dist/css/bootstrap.css';
+import {combineReducers} from 'redux';
 import user from './user_reducer';
-// import chatRoom from './chatRoom_reducer';
+import chatRoom from './chatRoom_reducers';
 
 const rootReducer = combineReducers({
-    user, 
-    // chatRoom
+    user,
+    chatRoom
 })
 
 export default rootReducer;

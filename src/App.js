@@ -1,73 +1,51 @@
-import React, { useEffect } from 'react';
-import {
-  Switch,
-  Route,
-  useHistory
-} from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
-import ChatPage from './components/ChatPage/ChatPage';
-import LoginPage from './components/LoginPage/LoginPage';
-import RegisterPage from './components/RegisterPage/RegisterPage';
+import ChatPage from "./components/ChatPage/ChatPage";
+import LoginPage from "./components/LoginPage/LoginPage";
+import RegisterPage from "./components/RegisterPage/RegisterPage";
 
-import firebase from './firebase';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  setUser
-} from './redux/actions/user_action';
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, clearUser } from "./redux/actions/user_action";
 
 function App(props) {
-  let history = useHistory();
+  const navigate = useNavigate();
   let dispatch = useDispatch();
-  const isLoading = useSelector(state => state.user.isLoading);
-  
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      console.log('user', user)
-      //로그인이 된 상태
-      if (user) {
-        history.push("/");
-        dispatch(setUser(user))
-      } else {
-        history.push("/login");
-      }
-    })
-  }, )
+  const isLoading = useSelector((state) => state.user.isLoading);
 
-  /*
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/");
+        dispatch(setUser(user));
+
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = user.uid;
+        // ...
+      } else {
+        navigate("/login");
+        dispatch(clearUser());
+        // User is signed out
+        // ...
+      }
+    });
+  }, []);
+
   if (isLoading) {
-    return (
-      <div>
-        ...loading
-      </div>
-    )
+    return <div>...loading</div>;
   } else {
     return (
-      <Switch>
-        <Route exact path="/" component={ChatPage} />
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/register" component={RegisterPage} />
-      </Switch>
+      <Routes>
+        <Route path="/" element={<ChatPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
     );
   }
-}
-*/
-
-if (false) {
-  return (
-    <div>
-      ...loading
-    </div>
-  )
-} else {
-  return (
-    <Switch>
-      <Route exact path="/" component={ChatPage} />
-      <Route exact path="/login" component={LoginPage} />
-      <Route exact path="/register" component={RegisterPage} />
-    </Switch>
-  );
-}
 }
 
 export default App;

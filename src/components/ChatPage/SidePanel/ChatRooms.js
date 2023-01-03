@@ -37,6 +37,10 @@ export class ChatRooms extends Component {
         this.AddChatRoomsListeners();
     }
 
+    componentWillUnmount() {
+        off(this.state.chatRoomsRef);
+    }
+
     setFirstChatRoom = () => {
 
         const firstChatRoom = this.state.chatRooms[0]
@@ -155,8 +159,8 @@ export class ChatRooms extends Component {
 
     changeChatRoom = (room) => {
         this.props.dispatch(setCurrentChatRoom(room));
-        // this.props.dispatch(setPrivateChatRoom(false));
-        // this.setState({ activeChatRoomId: room.id })
+        this.props.dispatch(setPrivateChatRoom(false));
+        this.setState({ activeChatRoomId: room.id })
     }
 
     getNotificationCount = (room) => {

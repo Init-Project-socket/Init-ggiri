@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { FaRegSmile } from 'react-icons/fa';
 import {
   getDatabase,
-  ref
+  ref,
+  onChildAdded
 } from "firebase/database";
 import { connect } from 'react-redux';
 import {
@@ -18,15 +19,15 @@ export class DirectMessages extends Component {
     }
 
     componentDidMount() {
-      /*  if (this.props.user) {
+        if (this.props.user) {
             this.addUsersListeners(this.props.user.uid)
-        }*/
+        }
     }
 
     addUsersListeners = (currentUserId) => {
         const { usersRef } = this.state;
         let usersArray = [];
-        usersRef.on("child_added", DataSnapshot => {
+        onChildAdded(usersRef, DataSnapshot => {
             if (currentUserId !== DataSnapshot.key) {
                 let user = DataSnapshot.val();
                 user["uid"] = DataSnapshot.key;
